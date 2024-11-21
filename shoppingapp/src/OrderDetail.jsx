@@ -22,6 +22,7 @@ const OrderDetail = () => {
 
   const location = useLocation();
   const order = location.state?.product;
+  console.log(order)
   const productDetails = productList.find(item => item.id === order.productId);
 
   if (!order) {
@@ -75,10 +76,10 @@ const OrderDetail = () => {
             {/* Right Column - Product Details */}
             <div className="product-section">
               <div>
-                {order.status === 'Chờ xác nhận' && <span className="status-waiting">Chờ xác nhận</span>}
-                {order.status === 'Đã xác nhận' && <span className="status-confirmed">Đã xác nhận</span>}
-                {order.status === 'Đang giao hàng' && <span className="status-in-delivery">Đang giao hàng</span>}
-                {order.status === 'Đã giao hàng' && <span className="status-delivered">Đã giao hàng</span>}
+                {order.status === 0 && <span className="status-waiting">Chờ xác nhận</span>}
+                {order.status === 1 && <span className="status-confirmed">Đã xác nhận</span>}
+                {order.status === 2 && <span className="status-in-delivery">Đang giao hàng</span>}
+                {order.status === 3 && <span className="status-delivered">Đã giao hàng</span>}
               </div>
               <div className="product-container">
                 <div className="product-image">

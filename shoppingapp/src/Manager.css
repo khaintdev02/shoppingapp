@@ -5,10 +5,31 @@
 
 }
  /* Sort Dropdown Styles */
+
+ .filters {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+ }
  .sort-dropdown {
   display: flex;
   align-items: center;
   margin-bottom: 20px;
+}
+.sort-dropdown-filter {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.sort-dropdown-filter select {
+  padding: 8px;
+  color: white;
+  border: 1px solid #2c3e7b;
+  border-radius: 10px;
+  background-color: #2c3e7b;
+  font-size: 16px; 
+  cursor: pointer; 
+  transition: border-color 0.3s; 
 }
 
 .sort-dropdown select {
@@ -130,10 +151,15 @@
     th, td {
       color: #2c3e7b;
       padding: 12px 5px;
-      text-align: left;
+      text-align: center;
       border-bottom: 1px solid #ddd;
     }
-    
+    .number {
+      text-align: right;
+    }
+    .character {
+      text-align: left;
+    }
     th {
       background-color: #f5f5f5;
       font-weight: bold;
@@ -207,18 +233,22 @@
   }
 
   .status-waiting {
+    text-align: left;
     color: orange;
 }
 
 .status-confirmed {
+  text-align: left;
     color: #2c3e7b;
 }
 
 .status-in-delivery {
+  text-align: left;
     color: purple;
 }
 
 .status-delivered {
+  text-align: left;
     color: green;
 }
 

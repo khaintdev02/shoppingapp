@@ -3,11 +3,17 @@ import Footer from './components/footer/Footer';
 import './Manager.css';
 import { Eye, Edit, Trash } from 'lucide-react';
 import orderList from './data/order';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; 
 import { Link } from 'react-router-dom';
 
 const OrderManager = () => {
+      const [orders, setOrders] = useState(orderList); 
+      const [filteredOrders, setFilteredOrders] = useState(orderList); 
+      const [selectedSortValue, setSelectedSortValue] = useState('');
+      const [selectedFilterValue, setSelectedFilterValue] = useState('');
+      const [currentPage, setCurrentPage] = useState(1);
+      const [ordersPerPage, setOrdersPerPage] = useState(10);
       // const handlePageChange = (pageNumber) => {
       //       setCurrentPage(pageNumber);
       //   };
@@ -22,49 +28,63 @@ const OrderManager = () => {
                 behavior: 'smooth'
             });
         };
-            const [orders, setOrders] = useState(orderList); 
-            const [filteredOrders, setFilteredOrders] = useState(orderList); 
-            const [selectedSortValue, setSelectedSortValue] = useState('');
-            const [currentPage, setCurrentPage] = useState(1);
-            const [ordersPerPage, setOrdersPerPage] = useState(10);
+      const handleFilterChange = (event) => {
+      const filterValue = event.target.value;
+      setSelectedFilterValue(filterValue); 
+      setCurrentPage(1); 
+      };
+      useEffect(() => {
+            let filtered = [...orders];
     
-            const handleSortChange = (event) => {
-                  const selectedValue = event.target.value;
-                  setSelectedSortValue(selectedValue);
-                  
-                  
-                  const newOrdersPerPage = parseInt(selectedValue) || 10;
-                  setOrdersPerPage(newOrdersPerPage);
-                  setCurrentPage(1); 
-          
-                  
-                  setFilteredOrders(orders);
-              };
-          
-              const totalPages = Math.ceil(filteredOrders.length / ordersPerPage);
-              const indexOfLastOrder = currentPage * ordersPerPage;
-              const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
-              const currentOrders = filteredOrders.slice(indexOfFirstOrder, indexOfLastOrder);          
-            const viewOrderDetails = (order) => {
-                  navigate('/orderDetail', { state: { product: order } }); // Sử dụng navigate
-            };
+            // Lọc theo trạng thái
+            if (selectedFilterValue !== '') {
+                const status = parseInt(selectedFilterValue, 10);
+                filtered = filtered.filter((order) => order.status === status);
+            }
+    
+            // Sắp xếp theo trạng thái
+            filtered.sort((a, b) => a.status - b.status); 
+            const newOrdersPerPage = parseInt(selectedSortValue) || 10;
+            setFilteredOrders(filtered);
+    
+            // Cập nhật số lượng đơn hiển thị
+            
+            setOrdersPerPage(newOrdersPerPage);
+        }, [selectedFilterValue, selectedSortValue, orders]);
+        
 
-            // Hàm sửa sản phẩm
-            const editOrder = (id, updateOrder) => {
-                  setOrders(orders.map(order => (order.id === id ? updateOrder : order)));
+      const handleSortChange = (event) => {
+            const selectedValue = event.target.value;
+            setSelectedSortValue(selectedValue);
+            
+            
+            const newOrdersPerPage = parseInt(selectedValue) || 10;
+            setOrdersPerPage(newOrdersPerPage);
+            setCurrentPage(1); 
+      
+            
+            setFilteredOrders(orders);
             };
+      
+            const totalPages = Math.ceil(filteredOrders.length / ordersPerPage);
+            const indexOfLastOrder = currentPage * ordersPerPage;
+            const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
+            const currentOrders = filteredOrders.slice(indexOfFirstOrder, indexOfLastOrder);          
+      const viewOrderDetails = (order) => {
+            navigate('/orderDetail', { state: { product: order } }); 
+      };
 
-            const deleteOrder = (id) => {
-                  const confirmDelete = window.confirm("Bạn có chắc chắn muốn xóa đơn hàng này?");
+      const deleteOrder = (id) => {
+            const confirmDelete = window.confirm("Bạn có chắc chắn muốn xóa đơn hàng này?");
 
-                  if (confirmDelete) {
-                  setOrders((prevOrders) => {
-                        const updatedOrders = prevOrders.filter(order => order.id !== id);
-                        setFilteredOrders(updatedOrders);
-                        return updatedOrders;
-                  });
-                  }
-            };
+            if (confirmDelete) {
+            setOrders((prevOrders) => {
+                  const updatedOrders = prevOrders.filter(order => order.id !== id);
+                  setFilteredOrders(updatedOrders);
+                  return updatedOrders;
+            });
+            }
+      };
       const sidebarItems = [
             { id: 1, title: 'Quản lý đơn hàng', path: '/orderManager',  active: true }, 
             { id: 2, title: 'Quản lý sản phẩm', path: '/productManager' },
@@ -94,25 +114,35 @@ const OrderManager = () => {
                         <div className="content-header">
                         <h1>Danh sách đơn hàng</h1>
                         </div>
-                  <div className="sort-dropdown">
-                        <select value={selectedSortValue} onChange={handleSortChange}>
-                              <option value="">Xem</option>
-                              <option value="10">10 đơn</option>
-                              <option value="20">20 đơn</option>
-                              <option value="30">30 đơn</option>
-                              <option value="50">50 đơn</option>
-                        </select>
-                  </div>
+                        <div className='filters'>
+                              <div className="sort-dropdown">
+                                    <select value={selectedSortValue} onChange={handleSortChange}>
+                                          <option value="">Xem</option>
+                                          <option value="10">10 đơn</option>
+                                          <option value="20">20 đơn</option>
+                                          <option value="30">30 đơn</option>
+                                          <option value="50">50 đơn</option>
+                                    </select>
+                              </div>
+                              <div className="sort-dropdown-filter">
+                                    <select value={selectedFilterValue} onChange={handleFilterChange} >
+                                          <option value="">Trạng thái</option>
+                                          <option value="0">Chờ xác nhận</option>
+                                          <option value="1">Đã xác nhận</option>
+                                          <option value="2">Đang giao hàng</option>
+                                          <option value="3">Đã giao hàng</option>
+                                    </select>
+                              </div>
+                        </div>
 
                   {/* Table */}
                   <div className="table-container">
                   <table>
                         <thead>
                         <tr>
-                        <th>Mã đơn</th>
+                        <th className='number'>Mã đơn</th>
                         <th>Ngày đặt</th>
-                        <th>Số điện thoại</th>
-                        <th>Địa chỉ</th>
+                        <th className='number'>Số điện thoại</th>
                         <th>Sản phẩm</th>
                         <th>Tổng tiền</th>
                         <th>Trạng thái</th>
@@ -123,22 +153,21 @@ const OrderManager = () => {
                         <tbody>
                         {currentOrders.map((order) => (
                         <tr key={order.id}>
-                              <td>{order.id}</td>
+                              <td className='number'>{order.id}</td>
                               <td>{order.date}</td>
-                              <td>{order.phone}</td>
-                              <td>{order.address}</td>
-                              <td>{order.product}</td>
+                              <td className='number'>{order.phone}</td>
+                              <td>{order.product.length > 20 ? order.product.substring(0, 20) + '...' : order.product}</td>
                               <td>{order.total}</td>
                               <td className="status">
-                                    {order.status === 'Chờ xác nhận' && <span className="status-waiting">Chờ xác nhận</span>}
-                                    {order.status === 'Đã xác nhận' && <span className="status-confirmed">Đã xác nhận</span>}
-                                    {order.status === 'Đang giao hàng' && <span className="status-in-delivery">Đang giao hàng</span>}
-                                    {order.status === 'Đã giao hàng' && <span className="status-delivered">Đã giao hàng</span>}
+                                    {order.status === 0 && <span className="status-waiting">Chờ xác nhận</span>}
+                                    {order.status === 1 && <span className="status-confirmed">Đã xác nhận</span>}
+                                    {order.status === 2 && <span className="status-in-delivery">Đang giao hàng</span>}
+                                    {order.status === 3 && <span className="status-delivered">Đã giao hàng</span>}
                               </td>
                               <td>{order.staffId}</td>
                               <td className="action-buttons">
                                     <button className="action-btn view" onClick={() => viewOrderDetails(order)}><Eye size={16} /></button>
-                                    <button className="action-btn edit" onClick={() => editOrder(order.id, { ...order, price: '1,200,000đ' })}><Edit size={16} /></button>
+                                    <button className="action-btn edit" ><Edit size={16} /></button>
                                     <button className="action-btn delete" onClick={() => deleteOrder(order.id)}><Trash size={16} /></button>
                               </td>
                         </tr>
@@ -146,48 +175,24 @@ const OrderManager = () => {
                         </tbody>
                   </table>
                   </div>
-
-                        {/* Pagination */}
-                    {/* <div className="pagination">
+                    <div className="pagination">
                         <div className="pagination-info">
                             <span>Trang {currentPage} / {totalPages}</span>
                         </div>
                         <div className="pagination-buttons">
                             {currentPage > 1 && (
-                                <button className='button-paging' onClick={() => handlePageChange(currentPage - 1)}>Trang trước</button>
+                                <button onClick={() => setCurrentPage(currentPage - 1)}>Trang trước</button>
                             )}
-                            {totalPages > 1 && (
-                                <>
-                                    <button className='button-paging' onClick={() => handlePageChange(1)}>1</button>
-                                    {totalPages > 2 && currentPage < totalPages && (
-                                        <button className='button-paging' onClick={() => handlePageChange(2)}>2</button>
-                                    )}
-                                </>
-                            )}
+                            {Array.from({ length: totalPages }, (_, index) => (
+                                <button key={index} onClick={() => setCurrentPage(index + 1)}>
+                                    {index + 1}
+                                </button>
+                            ))}
                             {currentPage < totalPages && (
-                                <button className='button-paging' onClick={handleNextPage}>Trang sau</button>
+                                <button onClick={() => setCurrentPage(currentPage + 1)}>Trang sau</button>
                             )}
                         </div>
-                    </div> */}
-                    {/* Phân trang */}
-            <div className="pagination">
-                <div className="pagination-info">
-                    <span>Trang {currentPage} / {totalPages}</span>
-                </div>
-                <div className="pagination-buttons">
-                    {currentPage > 1 && (
-                        <button onClick={() => setCurrentPage(currentPage - 1)}>Trang trước</button>
-                    )}
-                    {Array.from({ length: totalPages }, (_, index) => (
-                        <button key={index} onClick={() => setCurrentPage(index + 1)}>
-                            {index + 1}
-                        </button>
-                    ))}
-                    {currentPage < totalPages && (
-                        <button onClick={() => setCurrentPage(currentPage + 1)}>Trang sau</button>
-                    )}
-                </div>
-            </div>
+                    </div>
                   </div>
             </div>
             {/* Nút Kéo lên đầu trang */}

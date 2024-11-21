@@ -7,6 +7,7 @@ import SignUp from './SignUp.jsx'; // Import trang SignUp
 import OrderDetail from './OrderDetail.jsx';
 import OrderManager from './OrderManager.jsx';
 import ProductManager from './ProductManager.jsx';
+import ProductDetail from './ProductDetail.jsx';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -18,6 +19,7 @@ createRoot(document.getElementById('root')).render(
         <Route path="/orderManager" element={<OrderManager />} />
         <Route path="/" element={<Navigate to="/orderManager" replace />} />
         <Route path='/productManager' element={<ProductManager/>} />
+        <Route path='/productDetail' element={<ProductDetail/>} />
       </Routes>
     </Router>
   </StrictMode>,

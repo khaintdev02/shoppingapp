@@ -46,7 +46,7 @@ const ProductManager = () => {
               const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
               const currentOrders = filteredOrders.slice(indexOfFirstOrder, indexOfLastOrder);          
             const viewOrderDetails = (order) => {
-                  navigate('/orderDetail', { state: { product: order } }); // Sử dụng navigate
+                  navigate('/productDetail', { state: { product: order } });
             };
 
             // Hàm sửa sản phẩm
@@ -109,20 +109,20 @@ const ProductManager = () => {
                   <table>
                         <thead>
                         <tr>
-                        <th>Mã sản phẩm</th>
+                        <th className='number'>Mã sản phẩm</th>
                         <th>Tên sản phẩm</th>
                         <th>Giá sản phẩm</th>
-                        <th>Mô tả</th>
+                        <th className='character'>Mô tả</th>
                         <th>Thao tác</th>
                         </tr>
                         </thead>
                         <tbody>
                         {currentOrders.map((order) => (
                               <tr key={order.id}>
-                              <td>{order.id}</td>
+                              <td >{order.id}</td>
                               <td>{order.product}</td>
                               <td>{order.price} VND</td>
-                              <td>{(() => {
+                              <td className='character'>{(() => {
                                     const materialsString = order.materials.join(', ');
                                     const maxLength = 60; // Độ dài tối đa
                                     return materialsString.length > maxLength 

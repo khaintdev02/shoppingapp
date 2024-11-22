@@ -2,6 +2,7 @@ import { useState } from 'react';
 import "./SignUp.css";
 import Header from './components/header/Header';
 import Footer from './components/footer/Footer';
+import { Eye, EyeOff } from 'lucide-react';
 
 const SignUp = () => {
   const [formData, setFormData] = useState({
@@ -118,20 +119,13 @@ const SignUp = () => {
                   onFocus={handleFocus}
                 />
                 {inputStates.password.hasValue && (
-                  <span
+                  <div
                     className="toggle-password"
                     onClick={() => toggleShowPassword('password')}
                   >
-                    {inputStates.password.show ? (
-                      <i className="fas fa-eye-slash"></i>
-                    ) : (
-                      <i className="fas fa-eye"></i>
-                    )}
-                  </span>
+                  {inputStates.password.show ? <EyeOff /> : <Eye />}
+                  </div>
                 )}
-              </div>
-              <div className="password-requirements">
-                Ít nhất 8 ký tự, chữ hoa, chữ thường và số
               </div>
             </div>
 
@@ -151,16 +145,12 @@ const SignUp = () => {
                   onFocus={handleFocus}
                 />
                 {inputStates.confirmPassword.hasValue && (
-                  <span
+                  <div
                     className="toggle-password"
                     onClick={() => toggleShowPassword('confirmPassword')}
                   >
-                    {inputStates.confirmPassword.show ? (
-                      <i className="fas fa-eye-slash"></i>
-                    ) : (
-                      <i className="fas fa-eye"></i>
-                    )}
-                  </span>
+                    {inputStates.confirmPassword.show ? <EyeOff /> : <Eye />}
+                  </div>
                 )}
               </div>
             </div>

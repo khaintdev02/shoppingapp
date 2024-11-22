@@ -1,9 +1,10 @@
-import { useState , useEffect} from 'react';
+import { useState} from 'react';
 import "./SignUp.css";
 import Header from './components/header/Header';
 import Footer from './components/footer/Footer';
 import users from './data/user';
 import { useNavigate } from 'react-router-dom'; 
+import { Eye, EyeOff } from 'lucide-react';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -16,6 +17,13 @@ const Login = () => {
     email: '',
     password: ''
   });
+  const handleFocus = () => {
+    setHasPasswordValue(formData.password.length > 0);
+  };
+  
+  const handleBlur = () => {
+    setHasPasswordValue(formData.password.length > 0);
+  };
   const [showPassword, setShowPassword] = useState(false);
   const [hasPasswordValue, setHasPasswordValue] = useState(false);
 
@@ -24,12 +32,17 @@ const Login = () => {
     return re.test(email);
   };
 
+
   const handleChange = (e) => {
     const { name, value } = e.target;
   setFormData(prev => ({
     ...prev,
     [name]: value
   }));
+  if (name === 'password') {
+    setHasPasswordValue(value.length > 0);
+  }
+
     // Validate on change
     if (name === 'email' && value && !validateEmail(value)) {
       setErrors(prev => ({
@@ -42,19 +55,7 @@ const Login = () => {
         [name]: ''
       }));
     }
-    console.log(formData);
   };
-
-  // Hàm để chuyển đổi trạng thái hiển thị mật khẩu
-  const toggleShowPassword = () => {
-    setShowPassword(prev => !prev);
-  };
-  const handleFocus = () => {
-    setHasPasswordValue(formData.password.length > 0); // Set the value if password has any data
-  };
-  useEffect(() => {
-    setHasPasswordValue(formData.password.length > 0);
-  }, [formData.password]);
 
   const handleSubmit = (e) => {
 
@@ -106,20 +107,17 @@ const Login = () => {
                   placeholder="Mật khẩu"
                   value={formData.password}
                   onChange={handleChange}
+                  onBlur={handleBlur}
                   onFocus={handleFocus}
                 />
                   {hasPasswordValue && (
-                  <span
-                    className="toggle-password"
-                    onClick={toggleShowPassword}
-                  >
-                    { showPassword? (
-                      <i className="fas fa-eye-slash"></i>
-                    ) : (
-                      <i className="fas fa-eye"></i>
-                    )}
-                  </span>
-                )}
+                    <div
+                      className="toggle-password"
+                      onClick={() => setShowPassword((prev) => !prev)}
+                    >
+                      {showPassword ? <EyeOff /> : <Eye />}
+                    </div>
+                  )}
               </div>
           </div>
 

@@ -83,10 +83,23 @@
 .toggle-password {
   position: absolute;
   right: 12px;
-  top: 50%;
+  top: 60%;
   transform: translateY(-50%);
-  color: #bfbfbf;
+  color: #8a8a8a;
   cursor: pointer;
+}
+input::-ms-reveal,
+input::-ms-clear,
+input::-webkit-clear-button,
+input::-webkit-inner-spin-button,
+input::-webkit-outer-spin-button {
+  display: none; 
+}
+
+input[type="password"]::-ms-reveal, 
+input[type="password"]::-ms-clear, 
+input[type="password"]::-webkit-clear-button {
+  display: none;
 }
 
 .password-hint {
